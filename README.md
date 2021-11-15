@@ -7,7 +7,7 @@ This add-on allows you to upload your Hass.io snapshots to your Dropbox, keeping
 This add-on uses the [Dropbox-Uploader](https://github.com/andreafabrizi/Dropbox-Uploader) bash script to upload files to Dropbox. It requires that you generate an access token via the Dropbox Web UI, which must be added to this add-on's configuration via the Hass.io UI (see below for further details).
 
 ### Installation
-1. Add the add-ons repository to your Hass.io instance: `https://github.com/danielwelch/hassio-addons`
+1. Add the add-ons repository to your Hass.io instance: `https://github.com/nbaerts/hassio-addons`
 2. Install the Dropbox Sync add-on
 3. Configure the add-on with your Dropbox OAuth Token and desired output directory (see configuration below)
 
@@ -18,7 +18,7 @@ Dropbox Sync uploads all snapshot files (specifically, all `.tar` files) in the 
 After the add-on is configured and started, trigger an upload by calling the `hassio.addon_stdin` service with the following service data:
 
 ```json
-{"addon":"7be23ff5_dropbox_sync","input":{"command":"upload"}}
+{"addon":"e6d06dc3_dropbox_sync","input":{"command":"upload"}}
 ```
 
 This triggers the `dropbox_uploader.sh` script with the provided access token. You can use Home Assistant automations or scripts to run uploads at certain time intervals, under certain conditions, etc.
@@ -31,7 +31,7 @@ The `keep last dropbox` option allows the add-on to also clean up the deleted lo
 
 The `filetypes` option allows the add-on to upload arbitrary filetypes from the Hass.io `/share` directory to Dropbox. Set this option to a string of extensions seperated by `|` to upload matching files to Dropbox. For example, setting this option to `"jpg|png"` will upload all files in the `/share` folder ending in `.jpg` or `.png`. These files will be uploaded to the directory specified by the `output` option.
 
-*Note*: The hash `7be23ff5` that is prepended to the `dropbox_sync` add-on slug above is required. [See below](#repository-slugs-in-hassio) for an explanation. 
+*Note*: The hash `e6d06dc3` that is prepended to the `dropbox_sync` add-on slug above is required. [See below](#repository-slugs-in-hassio) for an explanation.
 ### Configuration
 
 To access your personal Dropobox, this add-on (and the `Dropbox-Uploader` script more generally) requires an access token. Follow these steps to create an Access Token:
@@ -39,7 +39,7 @@ To access your personal Dropobox, this add-on (and the `Dropbox-Uploader` script
 2. Click the "Create App" button
 3. Follow the prompts to set permissions and choose a unique name for your "app" token.
 
-Once you have created the token, copy it into this add-on's configuration under the `oauth_access_token` label. 
+Once you have created the token, copy it into this add-on's configuration under the `oauth_access_token` label.
 
 |Parameter|Required|Description|
 |---------|--------|-----------|
