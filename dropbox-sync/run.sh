@@ -5,6 +5,7 @@ CONFIG_PATH=/data/options.json
 TOKEN=$(jq --raw-output ".oauth_access_token" $CONFIG_PATH)
 OUTPUT_DIR=$(jq --raw-output ".output // empty" $CONFIG_PATH)
 KEEP_LAST=$(jq --raw-output ".keep_last // empty" $CONFIG_PATH)
+DROPBOX_DELETE=$(jq --raw-output ".keep_last_dropbox // empty" $CONFIG_PATH)
 FILETYPES=$(jq --raw-output ".filetypes // empty" $CONFIG_PATH)
 
 if [[ -z "$OUTPUT_DIR" ]]; then
@@ -29,7 +30,7 @@ while read -r msg; do
         ./dropbox_uploader.sh -s -f /etc/uploader.conf upload /backup/*.tar "$OUTPUT_DIR"
         if [[ "$KEEP_LAST" ]]; then
             echo "[Info] keep_last option is set, cleaning up files..."
-            python3 /keep_last.py "$KEEP_LAST"
+            python3 /keep_last.py "$KEEP_LAST" "$DROPBOX_DELETE" "$OUTPUT_DIR"
         fi
         if [[ "$FILETYPES" ]]; then
             echo "[Info] filetypes option is set, scanning share directory for files with extensions ${FILETYPES}"

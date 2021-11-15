@@ -9,7 +9,7 @@ BASE_URL = "http://hassio/"
 HEADERS = {"X-HASSIO-KEY": os.environ.get("HASSIO_TOKEN")}
 
 
-def main(number_to_keep):
+def main(number_to_keep, deleteOnDropbox, outputDir):
 
     snapshot_info = requests.get(BASE_URL + "snapshots", headers=HEADERS)
     snapshot_info.raise_for_status()
@@ -32,6 +32,12 @@ def main(number_to_keep):
             headers=HEADERS)
         if res.ok:
             print("[Info] Deleted snapshot {}".format(snapshot["slug"]))
+            if deleteOnDropbox == "true":
+                res = os.system("./dropbox_uploader.sh -f /etc/uploader.conf delete " + outputDir + "/" + snapshot["slug"] + ".tar")
+                 if res.ok:
+                     print("[Info] Deleted file {}.tar in dropbox".format(snapshot["slug"]))
+                 else:
+                     print("[Error] Failed to delete file {}.tar in dropbox: {}".format(snapshot["slug"], res.status_code))
             continue
         else:
             # log an error
@@ -43,5 +49,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(
         description='Remove old hassio snapshots.')
     parser.add_argument('number', type=int, help='Number of snapshots to keep')
+    parser.add_argument('deleteOnDropbox', type=str, help='Delete the old snapshot on Dropbox too')
+    parser.add_argument('outputDir', type=str, help='Dropbox output directory')
     args = parser.parse_args()
-    main(args.number)
+    main(args.number, args.deleteOnDropbox, args.outputDir)
